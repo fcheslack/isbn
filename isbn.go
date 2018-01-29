@@ -1,7 +1,7 @@
 package isbn
 
 import (
-	"errors"
+	//"errors"
 	"strconv"
 	//"strings"
 	"log"
@@ -14,8 +14,8 @@ const (
 
 type ISBN string
 
-func Normalize(in string) (string, error) {
-	log.Print("input: " + in)
+func Normalize(in string) string {
+	//log.Print("input: " + in)
 	s := []rune{}
 	inr := []rune(in)
 	for _, c := range inr {
@@ -31,31 +31,31 @@ func Normalize(in string) (string, error) {
 			s = append([]rune(ISBN10to13Prefix), s...)
 			check13 := checksum13digit(string(s))
 			s[12] = []rune(strconv.Itoa(check13))[0]
-			log.Printf("isbn10 was valid, normalized isbn13: %s", string(s))
+			//log.Printf("isbn10 was valid, normalized isbn13: %s", string(s))
 			if checksum13(string(s)) {
-				return string(s), nil
+				return string(s)
 			} else {
-				return "", errors.New("Error with checksum")
+				return ""
 			}
 		}
 	}
 
 	if len(s) != 13 {
-		return "", errors.New("Unable to normalize. Cleaned up string is not 13 digits")
+		return ""
 	}
 
 	if !checksum13(string(s)) {
-		return "", errors.New("Checksum failed")
+		return ""
 	}
 
-	log.Print("output: " + string(s))
-	return string(s), nil
+	//log.Print("output: " + string(s))
+	return string(s)
 }
 
 //verify the checksum character in a 13 digit string ISBN
 //assumes that the string is pre-validated as at least 13 characters that are all digits
 func checksum13(s string) bool {
-	if len(s) < 13 {
+	if len(s) != 13 {
 		return false
 	}
 
